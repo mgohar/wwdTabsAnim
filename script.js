@@ -35,12 +35,12 @@ var copyTab3 = [
   "Poor systems & processes",
   "Require micromanagement",
 ];
-let canvas = document.querySelector("BloxDroppingAnim");
 
-console.log(canvas);
 var two = new Two({
   type: Two.Types.canvas,
-  fullscreen: true,
+  // fullscreen: true,
+  width: window.innerWidth / 2,
+  height: window.innerHeight,
   autostart: true,
 }).appendTo(document.querySelector(".BloxDroppingAnim"));
 
@@ -100,7 +100,7 @@ two.bind("update", update);
 
 function addMouseInteraction() {
   // add mouse control
-  var mouse = Matter.Mouse.create(document.body);
+  var mouse = Matter.Mouse.create(document.querySelector(".BloxDroppingAnim"));
   var mouseConstraint = Matter.MouseConstraint.create(solver, {
     mouse: mouse,
     constraint: {
@@ -127,11 +127,11 @@ function resize() {
   Matter.Body.setPosition(bounds.left.entity, vector);
 
   vector.x = two.width + thickness / 2;
-  vector.y = two.height / 2;
+  vector.y = two.height / 2 - 200;
   Matter.Body.setPosition(bounds.right.entity, vector);
 
   vector.x = two.width / 2;
-  vector.y = two.height + thickness / 2;
+  vector.y = two.height + thickness / 2 - 200;
   Matter.Body.setPosition(bounds.bottom.entity, vector);
 
   // var size;
@@ -250,7 +250,7 @@ function update(frameCount, timeDelta) {
 
 function createBoundary(width, height) {
   var rectangle = two.makeRectangle(0, 0, width, height);
-  rectangle.visible = true;
+  rectangle.visible = false;
 
   rectangle.entity = Matter.Bodies.rectangle(
     0,
@@ -266,16 +266,21 @@ function createBoundary(width, height) {
 
 function dropGenTab(tab) {
   activeClick = false;
+  console.log("activeClick:", activeClick);
   Matter.Body.setStatic(bounds.bottom.entity, false);
   console.log("bounds", bounds.bottom.entity.isStatic);
 
-  setTimeout(() => {
+  let makeBottomBoundry = setTimeout(() => {
     Matter.Body.setStatic(bounds.bottom.entity, true);
     console.log("bounds", bounds.bottom.entity.isStatic);
-  }, 700);
+  }, 1000);
+  // clearTimeout(makeBottomBoundry);
 
-  setTimeout(() => {
+  let addBlocks = setTimeout(() => {
     addSlogan(tab);
     resize();
-  }, 800);
+  }, 2000);
+  // clearTimeout(addBlocks);
 }
+
+
