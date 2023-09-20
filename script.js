@@ -1,9 +1,10 @@
 var vector = new Two.Vector();
 var entities = [];
+var init= false;
 var mouse;
 var activeClick = true;
-var bgColor = ["#101010", "#E7F1FB", "#FD5A1E", "#C9FF00", "#C46BFF"];
-var textColors = ["#ffffff", "#101010", "#ffffff", "#101010", "#ffffff"];
+var bgColor = ["#101010", "#E7F1FB", "#FD5A1E", "#C9FF00", "#C46BFF","#101010", "#E7F1FB", "#FD5A1E", "#C9FF00"];
+var textColors = ["#ffffff", "#101010", "#ffffff", "#101010", "#ffffff","#ffffff", "#101010", "#ffffff", "#101010"];
 var copyTab1 = [
   "Strict contracts and scopes",
   "Stiff workflow and processes",
@@ -39,8 +40,8 @@ var copyTab3 = [
 var two = new Two({
   type: Two.Types.canvas,
   // fullscreen: true,
-  width: 600,
-  height: 400,
+  width: document.querySelector(".BloxDroppingAnim").clientWidth,
+  height: document.querySelector(".BloxDroppingAnim").clientHeight,
   autostart: true,
 }).appendTo(document.querySelector(".BloxDroppingAnim"));
 
@@ -93,25 +94,76 @@ buzzTab3.addEventListener("click", function () {
   if (activeClick) dropGenTab(copyTab3);
 });
 
-addSlogan(copyTab1);
+gsap.to(null, {
+  scrollTrigger: {
+    trigger: ".BloxDroppingAnim",
+    start: "top center",
+    end: "bottom center",
+    onEnter: () => {
+      if(init==false){
+        addSlogan(copyTab1);
+        init=true;
+      }
+    },
+    onLeaveBack: () => {
+      // dropGenTab(copyTab1);
+    },
+  },
+});
 resize();
-mouse = addMouseInteraction();
 two.bind("update", update);
 
-function addMouseInteraction() {
-  // add mouse control
-  var mouse = Matter.Mouse.create(document.querySelector(".BloxDroppingAnim"));
-  var mouseConstraint = Matter.MouseConstraint.create(solver, {
-    mouse: mouse,
-    constraint: {
-      stiffness: 0.2,
-    },
-  });
+// add mouse control
+var mouse = Matter.Mouse.create(document.querySelector(".BloxDroppingAnim"));
 
-  Matter.World.add(solver.world, mouseConstraint);
+var mouseConstraint = Matter.MouseConstraint.create(solver, {
+  mouse: mouse,
+  constraint: {
+    stiffness: 0.2,
+  },
+});
 
-  return mouseConstraint;
-}
+Matter.World.add(solver.world, mouseConstraint);
+
+// Allow page scrolling in matter.js window
+mouse.element.removeEventListener("mousewheel", mouse.mousewheel);
+mouse.element.removeEventListener("DOMMouseScroll", mouse.mousewheel);
+
+// Detect clicks vs. drags
+let click = false;
+
+document.addEventListener("mousedown", () => (click = true));
+document.addEventListener("mousemove", () => (click = false));
+document.addEventListener("mouseup", () =>
+  console.log(click ? "click" : "drag")
+);
+
+// Create a On-Mouseup Event-Handler
+Matter.Events.on(mouseConstraint, "mouseup", function (event) {
+  var mouseConstraint = event.source;
+  var bodies = solver.world.bodies;
+  if (!mouseConstraint.bodyB) {
+    for (i = 0; i < bodies.length; i++) {
+      var body = bodies[i];
+      // Check if clicked or dragged
+      if (click === true) {
+        if (
+          Matter.Bounds.contains(body.bounds, mouseConstraint.mouse.position)
+        ) {
+          var bodyUrl = body.url;
+          console.log("Body.Url >> " + bodyUrl);
+          // Hyperlinking feature
+          if (bodyUrl != undefined) {
+            //window.location.href = bodyUrl;
+            window.open(bodyUrl, "_blank");
+            console.log("Hyperlink was opened");
+          }
+          break;
+        }
+      }
+    }
+  }
+});
 
 function resize() {
   console.log(2222);
@@ -187,7 +239,7 @@ function addSlogan(copy) {
     var group = new Two.Group();
     var text = new Two.Text(word, 0, 0, {
       ...defaultStyles,
-      fill: textColors[rdm],
+      fill: textColors[i],
     });
 
     var rect = text.getBoundingClientRect();
@@ -198,7 +250,7 @@ function addSlogan(copy) {
 
     // New line
     if (ca >= cb) {
-      x = 500;
+      x = 0;
       y +=
         defaultStyles.leading +
         defaultStyles.margin.top +
@@ -209,7 +261,7 @@ function addSlogan(copy) {
     }
 
     var rectangle = new Two.RoundedRectangle(0, 0, rect.width, rect.height, 12);
-    rectangle.fill = bgColor[rdm];
+    rectangle.fill = bgColor[i];
     rectangle.noStroke();
     rectangle.visible = true;
 
@@ -236,8 +288,8 @@ function addSlogan(copy) {
 function update(frameCount, timeDelta) {
   console.log(111);
   var allBodies = Matter.Composite.allBodies(solver.world);
-  Matter.MouseConstraint.update(mouse, allBodies);
-  Matter.MouseConstraint._triggerEvents(mouse);
+  // Matter.MouseConstraint.update(mouse, allBodies);
+  // Matter.MouseConstraint._triggerEvents(mouse);
 
   Matter.Engine.update(solver);
 
@@ -250,7 +302,7 @@ function update(frameCount, timeDelta) {
 
 function createBoundary(width, height) {
   var rectangle = two.makeRectangle(0, 0, width, height);
-  rectangle.visible = true;
+  rectangle.visible = false;
 
   rectangle.entity = Matter.Bodies.rectangle(
     0,
@@ -279,8 +331,6 @@ function dropGenTab(tab) {
   let addBlocks = setTimeout(() => {
     addSlogan(tab);
     resize();
-  }, 2000);
+  }, 1500);
   // clearTimeout(addBlocks);
 }
-
-

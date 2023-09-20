@@ -3,8 +3,8 @@ var entities = [];
 var init= false;
 var mouse;
 var activeClick = true;
-var bgColor = ["#101010", "#E7F1FB", "#FD5A1E", "#C9FF00", "#C46BFF"];
-var textColors = ["#ffffff", "#101010", "#ffffff", "#101010", "#ffffff"];
+var bgColor = ["#101010", "#E7F1FB", "#FD5A1E", "#C9FF00", "#C46BFF","#101010", "#E7F1FB", "#FD5A1E", "#C9FF00"];
+var textColors = ["#ffffff", "#101010", "#ffffff", "#101010", "#ffffff","#ffffff", "#101010", "#ffffff", "#101010"];
 var copyTab1 = [
   "Strict contracts and scopes",
   "Stiff workflow and processes",
@@ -239,7 +239,7 @@ function addSlogan(copy) {
     var group = new Two.Group();
     var text = new Two.Text(word, 0, 0, {
       ...defaultStyles,
-      fill: textColors[rdm],
+      fill: textColors[i],
     });
 
     var rect = text.getBoundingClientRect();
@@ -250,7 +250,7 @@ function addSlogan(copy) {
 
     // New line
     if (ca >= cb) {
-      x = 500;
+      x = 0;
       y +=
         defaultStyles.leading +
         defaultStyles.margin.top +
@@ -261,7 +261,7 @@ function addSlogan(copy) {
     }
 
     var rectangle = new Two.RoundedRectangle(0, 0, rect.width, rect.height, 12);
-    rectangle.fill = bgColor[rdm];
+    rectangle.fill = bgColor[i];
     rectangle.noStroke();
     rectangle.visible = true;
 
@@ -302,7 +302,7 @@ function update(frameCount, timeDelta) {
 
 function createBoundary(width, height) {
   var rectangle = two.makeRectangle(0, 0, width, height);
-  rectangle.visible = true;
+  rectangle.visible = false;
 
   rectangle.entity = Matter.Bodies.rectangle(
     0,
@@ -331,6 +331,6 @@ function dropGenTab(tab) {
   let addBlocks = setTimeout(() => {
     addSlogan(tab);
     resize();
-  }, 2000);
+  }, 1500);
   // clearTimeout(addBlocks);
 }
