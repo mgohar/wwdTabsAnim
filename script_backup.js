@@ -1,5 +1,6 @@
 var vector = new Two.Vector();
 var entities = [];
+let borderRadius=0;
 var init = false;
 var mouse;
 var activeClick = true;
@@ -88,21 +89,42 @@ Matter.World.add(solver.world, [
   bounds.bottom.entity,
 ]);
 
-var defaultStyles = {
-  size: 16,
-  leading: 55,
-  paddingTop:10,
-  fontWeight: 'bold', 
-  family: "Angus, Arial, sans-serif",
-  alignment: "center",
-  baseline: "middle",
-  margin: {
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-};
+if(window.innerWidth>576){
+   borderRadius= 28;
+  var defaultStyles = {
+    size: 16,
+    leading: 55,
+    paddingTop:10,
+    fontWeight: 'bold', 
+    family: "Angus, Arial, sans-serif",
+    alignment: "center",
+    baseline: "middle",
+    margin: {
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+    },
+  };
+}else{
+   borderRadius= 20;
+  var defaultStyles = {
+    size: 14,
+    leading: 40,
+    paddingTop:10,
+    fontWeight: 'bold', 
+    family: "Angus, Arial, sans-serif",
+    alignment: "center",
+    baseline: "middle",
+    margin: {
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+    },
+  };
+}
+
 
 var buzzTab1 = document.querySelector(".buzz-tab1");
 var buzzTab2 = document.querySelector(".buzz-tab2");
@@ -295,7 +317,7 @@ function addSlogan(copy, tabname) {
       oy = y + rect.height / 2;
     }
 
-    var rectangle = new Two.RoundedRectangle(0, 0, rect.width, rect.height, 28);
+    var rectangle = new Two.RoundedRectangle(0, 0, rect.width, rect.height, borderRadius);
     rectangle.fill = bgColor[i];
     rectangle.noStroke();
     rectangle.visible = true;
