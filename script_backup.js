@@ -1,10 +1,31 @@
 var vector = new Two.Vector();
 var entities = [];
-var init= false;
+var init = false;
 var mouse;
 var activeClick = true;
-var bgColor = ["#101010", "#E7F1FB", "#FD5A1E", "#C9FF00", "#C46BFF","#101010", "#E7F1FB", "#FD5A1E", "#C9FF00"];
-var textColors = ["#ffffff", "#101010", "#ffffff", "#101010", "#ffffff","#ffffff", "#101010", "#ffffff", "#101010"];
+var prevTab = "tab1";
+var bgColor = [
+  "#101010",
+  "#E7F1FB",
+  "#FD5A1E",
+  "#C9FF00",
+  "#C46BFF",
+  "#101010",
+  "#E7F1FB",
+  "#FD5A1E",
+  "#C9FF00",
+];
+var textColors = [
+  "#ffffff",
+  "#101010",
+  "#ffffff",
+  "#101010",
+  "#ffffff",
+  "#ffffff",
+  "#101010",
+  "#ffffff",
+  "#101010",
+];
 var copyTab1 = [
   "Strict contracts and scopes",
   "Stiff workflow and processes",
@@ -85,13 +106,25 @@ var buzzTab1 = document.querySelector(".buzz-tab1");
 var buzzTab2 = document.querySelector(".buzz-tab2");
 var buzzTab3 = document.querySelector(".buzz-tab3");
 buzzTab1.addEventListener("click", function () {
-  if (activeClick) dropGenTab(copyTab1);
+  if (activeClick) {
+    dropGenTab(copyTab1, "tab1");
+    removeTabs(prevTab,1000);
+    prevTab = "tab1";
+  }
 });
 buzzTab2.addEventListener("click", function () {
-  if (activeClick) dropGenTab(copyTab2);
+  if (activeClick) {
+    dropGenTab(copyTab2, "tab2");
+    removeTabs(prevTab,1000);
+    prevTab = "tab2";
+  }
 });
 buzzTab3.addEventListener("click", function () {
-  if (activeClick) dropGenTab(copyTab3);
+  if (activeClick) {
+    dropGenTab(copyTab3, "tab3");
+    removeTabs(prevTab,1000);
+    prevTab='tab3';
+  }
 });
 
 gsap.to(null, {
@@ -100,9 +133,9 @@ gsap.to(null, {
     start: "top center",
     end: "bottom center",
     onEnter: () => {
-      if(init==false){
-        addSlogan(copyTab1);
-        init=true;
+      if (init == false) {
+        addSlogan(copyTab1, "tab1");
+        init = true;
       }
     },
     onLeaveBack: () => {
@@ -229,7 +262,7 @@ function resize() {
   }, 2000);
 }
 
-function addSlogan(copy) {
+function addSlogan(copy, tabname) {
   var x = defaultStyles.margin.left;
   var y = -350; // Header offset
 
@@ -277,8 +310,10 @@ function addSlogan(copy) {
     group.text = text;
     group.rectangle = rectangle;
     group.entity = entity;
-
+    group.name = tabname;
     group.add(rectangle, text);
+    let abcd = two.scene.children.filter((val) => val.name == word);
+    // console.log("group:",two.scene.children);
     two.add(group);
   }
 
@@ -316,7 +351,7 @@ function createBoundary(width, height) {
   return rectangle;
 }
 
-function dropGenTab(tab) {
+function dropGenTab(tab, tabname) {
   activeClick = false;
   console.log("activeClick:", activeClick);
   Matter.Body.setStatic(bounds.bottom.entity, false);
@@ -329,8 +364,20 @@ function dropGenTab(tab) {
   // clearTimeout(makeBottomBoundry);
 
   let addBlocks = setTimeout(() => {
-    addSlogan(tab);
+    addSlogan(tab, tabname);
     resize();
   }, 1500);
   // clearTimeout(addBlocks);
+}
+
+function removeTabs(tabname, delay) {
+  setTimeout(() => {
+    // two.remove(group)
+    let specificTabs = two.scene.children.filter((val) => val.name == tabname);
+    specificTabs.forEach((tab) => {
+      console.log(tab);
+      two.remove(tab);
+      two.clear();
+    });
+  }, delay);
 }
