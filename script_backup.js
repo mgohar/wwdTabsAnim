@@ -90,7 +90,9 @@ Matter.World.add(solver.world, [
 
 var defaultStyles = {
   size: 16,
-  leading: 50,
+  leading: 55,
+  paddingTop:10,
+  fontWeight: 'bold', 
   family: "Angus, Arial, sans-serif",
   alignment: "center",
   baseline: "middle",
@@ -293,7 +295,7 @@ function addSlogan(copy, tabname) {
       oy = y + rect.height / 2;
     }
 
-    var rectangle = new Two.RoundedRectangle(0, 0, rect.width, rect.height, 12);
+    var rectangle = new Two.RoundedRectangle(0, 0, rect.width, rect.height, 28);
     rectangle.fill = bgColor[i];
     rectangle.noStroke();
     rectangle.visible = true;
